@@ -56,25 +56,16 @@ export function groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A> {
 /**
  * Utility function that safely creates a nested object using the given keys and sets the value to the final key.
  *
- * const peopleIndex = {
- *   UK: {
- *     London: { name: "Bob", country: "UK", city: "London" },
- *     Norwich: { name: "Mary", country: "UK", city: "Norwich" }
- *   },
- *   US: {
- *     Pawnee: { name: "Leslie", country: "US", city: "Pawnee" }
- *   }
- * };
+ * let peopleIndex = {};
+ * const person1 = { name: "John", country: "AU", city: "Perth" };
+ * const person1 = { name: "Bob", country: "UK", city: "London" };
  *
- * const newIndex = setNested({ name: "John", country: "AU", city: "Perth"}, peopleIndex, "country", "city");
+ * peopleIndex = setNested(person1, peopleIndex, person1.country, person1.city);
+ * peopleIndex = setNested(person2, peopleIndex, person2.country, person2.city);
  *
  * {
  *   UK: {
  *     London: { name: "Bob", country: "UK", city: "London"},
- *     Norwich: { name: "Mary", country: "UK", city: "Norwich"}
- *   },
- *   US: {
- *     Pawnee: { name: "Leslie", country: "US", city: "Pawnee"}
  *   },
  *   AU: {
  *     Perth: { name: "John", country: "AU", city: "Perth"}
@@ -90,8 +81,7 @@ export function setNested<T extends object>(value: any, root: T, ...keys: string
 
   const lastKey = keys[keys.length -1];
 
-  base[lastKey] = base[lastKey] || [];
-  base[lastKey].push(value);
+  base[lastKey] = value;
 
   return root;
 }
@@ -100,28 +90,19 @@ export function setNested<T extends object>(value: any, root: T, ...keys: string
 /**
  * Utility function that safely creates a nested object using the given keys and pushes the value to the final key.
  *
- * const peopleIndex = {
- *   UK: {
- *     London: [{ name: "Bob", country: "UK", city: "London"}],
- *     Norwich: [{ name: "Mary", country: "UK", city: "Norwich"}],
- *   },
- *   US: {
- *     Pawnee: [{ name: "Leslie", country: "US", city: "Pawnee"}]
- *   }
- * };
+ * let peopleIndex = {};
+ * const person1 = { name: "John", country: "UK", city: "London" };
+ * const person2 = { name: "John", country: "UK", city: "London" };
  *
- * const newIndex = pushNested({ name: "John", country: "UK", city: "London"}, peopleIndex, "country", "city");
+ * peopleIndex = pushNested(person1, peopleIndex, person1.country, person1.city);
+ * peopleIndex = pushNested(person2, peopleIndex, person2.country, person2.city);
  *
  * {
  *   UK: {
  *     London: [
  *       { name: "Bob", country: "UK", city: "London"},
  *       { name: "John", country: "UK", city: "London"}
- *     ],
- *     Norwich: [{ name: "Mary", country: "UK", city: "Norwich"}],
- *   },
- *   US: {
- *     Pawnee: [{ name: "Leslie", country: "US", city: "Pawnee"}]
+ *     ]
  *   }
  * };
  */
