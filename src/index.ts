@@ -215,3 +215,59 @@ export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: stri
   }
 }
 
+/**
+ * Flatten an array of arrays into a single array.
+ *
+ * Example usage:
+ *
+ * const arrays = [
+ *   [1, 2, 3],
+ *   [2, 3, 4],
+ *   [3, 4, 5]
+ * ];
+ *
+ * flatten(arrays) //[1, 2, 3, 2, 3, 4, 3, 4, 5];
+ */
+export function flatten<T>(arr: T[][]): T[] {
+  return [].concat.apply([], arr);
+}
+
+/**
+ * Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
+ *
+ * See https://github.com/Microsoft/TypeScript/issues/5453
+ *
+ * Credit: Edd Mann (http://eddmann.com/posts/cartesian-product-in-javascript/)
+ *
+ * Example usage:
+ *
+ * const array1 = [1, 2, 3];
+ * const array2 = ["a", "b"];
+ * const array3 = [2, 3, 4];
+ *
+ * product(array1, array2, array3)
+ *
+ * [
+ *   [1, "a", 2],
+ *   [1, "a", 3],
+ *   [1, "a", 4],
+ *   [1, "b", 2],
+ *   [1, "b", 3],
+ *   [1, "b", 4],
+ *   [2, "a", 2],
+ *   [2, "a", 3],
+ *   [2, "a", 4],
+ *   [2, "b", 2],
+ *   [2, "b", 3],
+ *   [2, "b", 4],
+ *   [3, "a", 2],
+ *   [3, "a", 3],
+ *   [3, "a", 4],
+ *   [3, "b", 2],
+ *   [3, "b", 3],
+ *   [3, "b", 4]
+ * ]
+ */
+export function product(...sets: any[][]): any[][] {
+  return sets.reduce((acc, set) => flatten(acc.map(x => set.map(y => [ ...x, y ]))), [[]]);
+}

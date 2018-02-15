@@ -1,6 +1,6 @@
-# ts-array-utils
+# ts-array-utils [![Build Status](https://travis-ci.org/linusnorton/ts-array-utils.svg?branch=master)](https://travis-ci.org/linusnorton/ts-array-utils)
 
-Miscellaneous array utilities written in TypeScript.
+Miscellaneous array utilities written in TypeScript. This library has no dependencies but does require many ES6 features.
 
 ## Install
 
@@ -156,6 +156,62 @@ nestedObjectSearch(discounts, "ALL", "StationA", "StationB"); // ["40%", "30%", 
 nestedObjectSearch(discounts, "ALL", "StationC", "StationB"); // ["20%", "10%"]
 nestedObjectSearch(discounts, "ALL", "StationB", "StationC"); // ["50%", "25%", "10%"],
 nestedObjectSearch(discounts, "ALL", "StationC", "StationD"); // ["10%"]
+```
+
+### flatten<T>(arr: T[][]): T[]
+
+Flatten an array of arrays into a single array.
+
+Example usage:
+
+```
+const arrays = [
+  [1, 2, 3],
+  [2, 3, 4],
+  [3, 4, 5]
+];
+
+flatten(arrays) // [1, 2, 3, 2, 3, 4, 3, 4, 5];
+```
+
+### product(...sets: any[][]): any[][] {
+
+Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
+
+See https://github.com/Microsoft/TypeScript/issues/5453
+
+Credit: Edd Mann (http://eddmann.com/posts/cartesian-product-in-javascript/)
+
+Example usage:
+
+```
+const array1 = [1, 2, 3];
+const array2 = ["a", "b"];
+const array3 = [2, 3, 4];
+
+product(array1, array2, array3);
+
+// output:
+[
+  [1, "a", 2],
+  [1, "a", 3],
+  [1, "a", 4],
+  [1, "b", 2],
+  [1, "b", 3],
+  [1, "b", 4],
+  [2, "a", 2],
+  [2, "a", 3],
+  [2, "a", 4],
+  [2, "b", 2],
+  [2, "b", 3],
+  [2, "b", 4],
+  [3, "a", 2],
+  [3, "a", 3],
+  [3, "a", 4],
+  [3, "b", 2],
+  [3, "b", 3],
+  [3, "b", 4]
+]
 ```
 
 ## Testing

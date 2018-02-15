@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import {nestedObjectSearch, preferentialKeySearch} from "../src/";
+import {flatten, nestedObjectSearch, preferentialKeySearch, product} from "../src/";
 
 describe("preferentialKeySearch", () => {
 
@@ -42,6 +42,51 @@ describe("nestedObjectSearch", () => {
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationC", "StationB"))).to.deep.equal(["20%", "10%"]);
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationB", "StationC"))).to.deep.equal(["50%", "25%", "10%"]);
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationC", "StationD"))).to.deep.equal(["10%"]);
+  });
+
+});
+
+describe("flatten", () => {
+
+  it("flattens nested arrays", () => {
+    const arrays = [
+      [1, 2, 3],
+      [2, 3, 4],
+      [3, 4, 5]
+    ];
+
+    chai.expect(flatten(arrays)).to.deep.equal([1, 2, 3, 2, 3, 4, 3, 4, 5]);
+  });
+
+});
+
+describe("product", () => {
+
+  it("returns the cartesian product of array", () => {
+    const array1 = [1, 2, 3];
+    const array2 = ["a", "b"];
+    const array3 = [2, 3, 4];
+
+    chai.expect(product(array1, array2, array3)).to.deep.equal([
+      [1, "a", 2],
+      [1, "a", 3],
+      [1, "a", 4],
+      [1, "b", 2],
+      [1, "b", 3],
+      [1, "b", 4],
+      [2, "a", 2],
+      [2, "a", 3],
+      [2, "a", 4],
+      [2, "b", 2],
+      [2, "b", 3],
+      [2, "b", 4],
+      [3, "a", 2],
+      [3, "a", 3],
+      [3, "a", 4],
+      [3, "b", 2],
+      [3, "b", 3],
+      [3, "b", 4],
+    ]);
   });
 
 });
