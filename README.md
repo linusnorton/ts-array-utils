@@ -48,30 +48,22 @@ const peopleByName = people.reduce(indexBy(person => person.name), {});
 Utility function that safely creates a nested object using the given keys and sets the value to the final key.
 
 ```
-const peopleIndex = {
-  UK: {
-    London: { name: "Bob", country: "UK", city: "London" },
-    Norwich: { name: "Mary", country: "UK", city: "Norwich" }
-  },
-  US: {
-    Pawnee: { name: "Leslie", country: "US", city: "Pawnee" }
-  }
-};
+let peopleIndex = {};
+const person1 = { name: "John", country: "AU", city: "Perth" };
+const person1 = { name: "Bob", country: "UK", city: "London" };
 
-const newIndex = setNested({ name: "John", country: "AU", city: "Perth"}, peopleIndex, "country", "city");
+peopleIndex = setNested(person1, peopleIndex, person1.country, person1.city);
+peopleIndex = setNested(person2, peopleIndex, person2.country, person2.city);
 
 {
   UK: {
     London: { name: "Bob", country: "UK", city: "London"},
-    Norwich: { name: "Mary", country: "UK", city: "Norwich"}
-  },
-  US: {
-    Pawnee: { name: "Leslie", country: "US", city: "Pawnee"}
   },
   AU: {
     Perth: { name: "John", country: "AU", city: "Perth"}
   }
 };
+
 ```
 
 ### pushNested<T extends object, U>(value: U, root: T, ...keys: string[]): T
@@ -81,28 +73,19 @@ Safely creates a nested object using the given keys and pushes the value to the 
 Example usage:
 
 ```
-const peopleIndex = {
-  UK: {
-    London: [{ name: "Bob", country: "UK", city: "London"}],
-    Norwich: [{ name: "Mary", country: "UK", city: "Norwich"}],
-  },
-  US: {
-    Pawnee: [{ name: "Leslie", country: "US", city: "Pawnee"}]
-  }
-};
- 
-const newIndex = pushNested({ name: "John", country: "UK", city: "London"}, peopleIndex, "country", "city");
- 
+let peopleIndex = {};
+const person1 = { name: "John", country: "UK", city: "London" };
+const person2 = { name: "John", country: "UK", city: "London" };
+
+peopleIndex = pushNested(person1, peopleIndex, person1.country, person1.city);
+peopleIndex = pushNested(person2, peopleIndex, person2.country, person2.city);
+
 {
   UK: {
     London: [
       { name: "Bob", country: "UK", city: "London"},
       { name: "John", country: "UK", city: "London"}
-    ],
-    Norwich: [{ name: "Mary", country: "UK", city: "Norwich"}],
-  },
-  US: {
-    Pawnee: [{ name: "Leslie", country: "US", city: "Pawnee"}]
+    ]
   }
 };
 ```
