@@ -43,7 +43,7 @@ const peopleByName = people.reduce(indexBy(person => person.name), {});
 }
 ```
 
-### setNested<T extends object>(value: any, root: T, ...keys: string[]): T
+### setNested<T extends object>(value: any, root: T, ...keys: (string | number)[]): T
 
 Utility function that safely creates a nested object using the given keys and sets the value to the final key.
 
@@ -66,7 +66,7 @@ peopleIndex = setNested(person2, peopleIndex, person2.country, person2.city);
 
 ```
 
-### pushNested<T extends object, U>(value: U, root: T, ...keys: string[]): T
+### pushNested<T extends object, U>(value: U, root: T, ...keys: (string | number)[]): T
 
 Safely creates a nested object using the given keys and pushes the value to the final key.
 
@@ -90,7 +90,7 @@ peopleIndex = pushNested(person2, peopleIndex, person2.country, person2.city);
 };
 ```
 
-### preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: string[]): T[]
+### preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: (string | number)[]): T[]
 
 Given a map of T this function will examine each key in left to right order and add the values of those keys to an array.
 
@@ -111,7 +111,7 @@ There are no aardvarks so you get your first preference of fish followed by cow.
 
 This method is useful for searching through multiple keys and falling back to another key if the first is not found.
 
-### *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: string[]): any | undefined
+### *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: (string | number)[]): any | undefined
 
 This function recursively search through object tree using the given keys. Results are yielded in order of preference. If at any point one of the keys is not set it will fallback to the fallbackKey.
 

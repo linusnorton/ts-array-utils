@@ -72,7 +72,7 @@ export function groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A> {
  *   }
  * };
  */
-export function setNested<T extends object>(value: any, root: T, ...keys: string[]): T {
+export function setNested<T extends object>(value: any, root: T, ...keys: (string | number)[]): T {
   let base = root;
 
   for (const key of keys.slice(0, -1)) {
@@ -106,7 +106,7 @@ export function setNested<T extends object>(value: any, root: T, ...keys: string
  *   }
  * };
  */
-export function pushNested<T extends object, U>(value: U, root: T, ...keys: string[]): T {
+export function pushNested<T extends object, U>(value: U, root: T, ...keys: (string | number)[]): T {
   let base = root;
 
   for (const key of keys.slice(0, -1)) {
@@ -140,7 +140,7 @@ export function pushNested<T extends object, U>(value: U, root: T, ...keys: stri
  * This method is useful for searching through multiple keys and falling back to another key if the first is not found.
  *
  */
-export function preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: string[]): T[] {
+export function preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: (string | number)[]): T[] {
   const values: T[] = [];
 
   for (const key of keys) {
@@ -180,7 +180,7 @@ export function preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: str
  * nestedObjectSearch(discounts, "ALL", "StationB", "StationC"); // ["50%", "25%", "10%"],
  * nestedObjectSearch(discounts, "ALL", "StationC", "StationD"); // ["10%"]
  */
-export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: string[]): any | undefined {
+export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: (string | number)[]): any | undefined {
   // find all the results at this search level
   const values = preferentialKeySearch(obj, keys[0], fallbackKey);
 
