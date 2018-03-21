@@ -1,6 +1,6 @@
 
 export type MapOf<A> = {
-  [key: string]: A
+  key: A
 }
 
 export type Reducer<ResultT, ItemT> = (prev: MapOf<ResultT>, item: ItemT) => MapOf<ResultT>;
@@ -52,6 +52,31 @@ export function groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A> {
   }
 }
 
+
+/**
+ * Return a function that can be used to reduce an array to an object of string -> A
+ *
+ * Example usage:
+ *
+ * const people = [{name: "Bob", age: 1}, {name: "Bill", age: 2}, {name: "Bob", age: 3}];
+ * const ageByName = people.reduce(keyValue(person => [person.name, person.age]), {});
+ *
+ * {
+ *   Bob: 3,
+ *   Bill: 2
+ * }
+ *
+ * Note that any duplicate keys are overridden.
+ */
+export function keyValue<A, B>(fn: (item: B) => [string | number, A]): Reducer<A, B> {
+  return function(prev: MapOf<A>, item: B) {
+    const [key, value] = fn(item);
+
+    prev[key] = value;
+
+    return prev;
+  }
+}
 
 /**
  * Utility function that safely creates a nested object using the given keys and sets the value to the final key.

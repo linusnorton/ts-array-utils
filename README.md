@@ -43,6 +43,23 @@ const peopleByName = people.reduce(indexBy(person => person.name), {});
 }
 ```
 
+### export function keyValue<A, B>(fn: (item: B) => [string | number, A]): Reducer<A, B>
+
+Return a function that can be used to reduce an array to an object of string -> A
+
+Example usage:
+
+```
+const people = [{name: "Bob", age: 1}, {name: "Bill", age: 2}, {name: "Bob", age: 3}];
+const ageByName = people.reduce(keyValue(person => [person.name, person.age]), {});
+
+{
+   Bob: 3,
+   Bill: 2
+}
+```
+Note that any duplicate keys are overridden.
+
 ### setNested<T extends object>(value: any, root: T, ...keys: (string | number)[]): T
 
 Utility function that safely creates a nested object using the given keys and sets the value to the final key.

@@ -1,5 +1,25 @@
 import * as chai from "chai";
-import {flatten, nestedObjectSearch, preferentialKeySearch, product} from "../src/";
+import {flatten, keyValue, nestedObjectSearch, preferentialKeySearch, product} from "../src/";
+
+describe("keyValue", () => {
+
+  it("indexes items", () => {
+    const animals = [
+      { type: "cat", name: "Kitty" },
+      { type: "cow", name: "MooMoo" },
+      { type: "dog", name: "Barky" },
+      { type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce(keyValue(animal => [animal.type, animal.name]), {});
+
+    chai.expect(nameByType["cat"]).to.equal("Kitty");
+    chai.expect(nameByType["cow"]).to.equal("MooMoo");
+    chai.expect(nameByType["dog"]).to.equal("Barky");
+    chai.expect(nameByType["fish"]).to.equal("Bloop");
+  });
+
+});
 
 describe("preferentialKeySearch", () => {
 
