@@ -1,12 +1,16 @@
 
-export type MapOf<A> = {
-  key: A
-}
-
-export type Reducer<ResultT, ItemT> = (prev: MapOf<ResultT>, item: ItemT) => MapOf<ResultT>;
+/**
+ * Function that can be passed to reduce
+ */
+export type Reducer<T, U> = (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U;
 
 /**
- * Return a function that can be used to reduce an array to an object of A indexed by the string returned by the given
+ * Function the generates a key for a given value
+ */
+export type KeyGenerator<T> = (item: T) => string;
+
+/**
+ * Return a function that can be used to reduce an array to an object of U indexed by the string returned by the given
  * function.
  *
  * Example usage:
@@ -20,16 +24,16 @@ export type Reducer<ResultT, ItemT> = (prev: MapOf<ResultT>, item: ItemT) => Map
  * }
  *
  */
-export function indexBy<Item>(fn: (any: Item) => string | number): Reducer<Item, Item> {
-  return function(prev: MapOf<Item>, item: Item): MapOf<Item> {
-    prev[fn(item)] = item;
+export function indexBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T>> {
+  return function(previousValue: Record<string, T>, currentValue: T): Record<string, T> {
+    previousValue[fn(currentValue)] = currentValue;
 
-    return prev;
+    return previousValue;
   }
 }
 
 /**
- * Return a function that can be used to reduce an array to an object of A[] indexed by the string returned by the given
+ * Return a function that can be used to reduce an array to an object of U[] indexed by the string returned by the given
  * function.
  *
  * Example usage:
@@ -43,18 +47,18 @@ export function indexBy<Item>(fn: (any: Item) => string | number): Reducer<Item,
  * }
  *
  */
-export function groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A> {
-  return function(prev: MapOf<A[]>, item: A) {
-    const key = fn(item);
-    (prev[key] = prev[key] || []).push(item);
+export function groupBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T[]>> {
+  return function(previousValue: Record<string, T[]>, currentValue: T): Record<string, T[]> {
+    const key = fn(currentValue);
+    (previousValue[key] = previousValue[key] || []).push(currentValue);
 
-    return prev;
+    return previousValue;
   }
 }
 
 
 /**
- * Return a function that can be used to reduce an array to an object of string -> A
+ * Return a function that can be used to reduce an array to an object of string -> U
  *
  * Example usage:
  *
@@ -68,8 +72,8 @@ export function groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A> {
  *
  * Note that any duplicate keys are overridden.
  */
-export function keyValue<A, B>(fn: (item: B) => [string | number, A]): Reducer<A, B> {
-  return function(prev: MapOf<A>, item: B) {
+export function keyValue<T, U>(fn: (item: T) => [string, U]): Reducer<T, Record<string, U>> {
+  return function(prev: Record<string, U>, item: T) {
     const [key, value] = fn(item);
 
     prev[key] = value;
@@ -97,8 +101,8 @@ export function keyValue<A, B>(fn: (item: B) => [string | number, A]): Reducer<A
  *   }
  * };
  */
-export function setNested<T extends object>(value: any, root: T, ...keys: (string | number)[]): T {
-  let base = root;
+export function setNested<T, U>(value: U, root: T, ...keys: string[]): T {
+  let base: any = root;
 
   for (const key of keys.slice(0, -1)) {
     base = base[key] = base[key] || {};
@@ -131,8 +135,8 @@ export function setNested<T extends object>(value: any, root: T, ...keys: (strin
  *   }
  * };
  */
-export function pushNested<T extends object, U>(value: U, root: T, ...keys: (string | number)[]): T {
-  let base = root;
+export function pushNested<T extends Object, U>(value: U, root: T, ...keys: string[]): T {
+  let base: any = root;
 
   for (const key of keys.slice(0, -1)) {
     base = base[key] = base[key] || {};
@@ -165,7 +169,7 @@ export function pushNested<T extends object, U>(value: U, root: T, ...keys: (str
  * This method is useful for searching through multiple keys and falling back to another key if the first is not found.
  *
  */
-export function preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: (string | number)[]): T[] {
+export function preferentialKeySearch<T>(obj: Record<string, T>, ...keys: string[]): T[] {
   const values: T[] = [];
 
   for (const key of keys) {
@@ -205,7 +209,7 @@ export function preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: (st
  * nestedObjectSearch(discounts, "ALL", "StationB", "StationC"); // ["50%", "25%", "10%"],
  * nestedObjectSearch(discounts, "ALL", "StationC", "StationD"); // ["10%"]
  */
-export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: (string | number)[]): any | undefined {
+export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: string[]): any | undefined {
   // find all the results at this search level
   const values = preferentialKeySearch(obj, keys[0], fallbackKey);
 
@@ -276,4 +280,26 @@ export function flatten<T>(arr: T[][]): T[] {
  */
 export function product(...sets: any[][]): any[][] {
   return sets.reduce((acc, set) => flatten(acc.map(x => set.map(y => [ ...x, y ]))), [[]]);
+}
+
+/**
+ * Safely retrieve a nested object property.
+ *
+ * Example usage:
+ *
+ * const obj = {
+ *   type: {
+ *     name: {
+ *       value: 6
+ *     }
+ *   }
+ * };
+ *
+ * safeGet(obj, "type", "name", "value"); // 6
+ * safeGet(obj, "type", "name", "fail"); // undefined
+ */
+export function safeGet<T>(obj: any, ...props: string[]): T | undefined {
+  return props.length > 1 && obj[props[0]]
+    ? safeGet(obj[props[0]], ...props.slice(1))
+    : obj[props[0]];
 }

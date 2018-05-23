@@ -10,7 +10,7 @@ npm install --save ts-array-utils
 
 ## Documentation
 
-### indexBy<Item>(fn: (any: Item) => string | number): Reducer<Item, Item>
+### indexBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T>
 
 
 Return a function that can be used to reduce an array to an object of A indexed by the string returned by the given function.
@@ -27,7 +27,7 @@ const peopleByName = people.reduce(indexBy(person => person.name), {});
 }
 ```
 
-### groupBy<A>(fn: (item: A) => string | number): Reducer<A[], A>
+### groupBy<T>(fn: KeyGenerator<T>: Reducer<T, Record<string, T>>
 
 Return a function that can be used to reduce an array to an object of A[] indexed by the string returned by the given function.
 
@@ -43,7 +43,7 @@ const peopleByName = people.reduce(indexBy(person => person.name), {});
 }
 ```
 
-### export function keyValue<A, B>(fn: (item: B) => [string | number, A]): Reducer<A, B>
+### export function keyValue<T, U>(fn: (item: T) => [string, U]): Reducer<T, Record, string, U>
 
 Return a function that can be used to reduce an array to an object of string -> A
 
@@ -60,7 +60,7 @@ const ageByName = people.reduce(keyValue(person => [person.name, person.age]), {
 ```
 Note that any duplicate keys are overridden.
 
-### setNested<T extends object>(value: any, root: T, ...keys: (string | number)[]): T
+### setNested<T extends object>(value: any, root: T, ...keys: string[]): T
 
 Utility function that safely creates a nested object using the given keys and sets the value to the final key.
 
@@ -83,7 +83,7 @@ peopleIndex = setNested(person2, peopleIndex, person2.country, person2.city);
 
 ```
 
-### pushNested<T extends object, U>(value: U, root: T, ...keys: (string | number)[]): T
+### pushNested<T extends object, U>(value: U, root: T, ...keys: string[]): T
 
 Safely creates a nested object using the given keys and pushes the value to the final key.
 
@@ -107,7 +107,7 @@ peopleIndex = pushNested(person2, peopleIndex, person2.country, person2.city);
 };
 ```
 
-### preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: (string | number)[]): T[]
+### preferentialKeySearch<T>(obj: { [key: string]: T }, ...keys: string[]): T[]
 
 Given a map of T this function will examine each key in left to right order and add the values of those keys to an array.
 
@@ -128,7 +128,7 @@ There are no aardvarks so you get your first preference of fish followed by cow.
 
 This method is useful for searching through multiple keys and falling back to another key if the first is not found.
 
-### *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: (string | number)[]): any | undefined
+### *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: string[]): any | undefined
 
 This function recursively search through object tree using the given keys. Results are yielded in order of preference. If at any point one of the keys is not set it will fallback to the fallbackKey.
 
@@ -174,7 +174,7 @@ const arrays = [
 flatten(arrays) // [1, 2, 3, 2, 3, 4, 3, 4, 5];
 ```
 
-### product(...sets: any[][]): any[][] {
+### product(...sets: any[][]): any[][] 
 
 Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
 
@@ -212,6 +212,25 @@ product(array1, array2, array3);
   [3, "b", 3],
   [3, "b", 4]
 ]
+```
+
+### safeGet<T>(obj: any, ...props: string[]): T | undefined 
+
+Safely retrieve a nested object property.
+ 
+Example usage:
+
+```
+const obj = {
+  type: {
+    name: {
+      value: 6
+    }
+  }
+};
+
+safeGet(obj, "type", "name", "value"); // 6
+safeGet(obj, "type", "name", "fail"); // undefined
 ```
 
 ## Testing

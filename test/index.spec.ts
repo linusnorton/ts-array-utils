@@ -1,5 +1,118 @@
 import * as chai from "chai";
-import {flatten, keyValue, nestedObjectSearch, preferentialKeySearch, product} from "../src/";
+import {
+  flatten,
+  groupBy,
+  indexBy,
+  keyValue,
+  nestedObjectSearch,
+  preferentialKeySearch,
+  product, pushNested, safeGet,
+  setNested
+} from "../src/";
+
+
+interface Animal {
+  type: string;
+  name: string;
+}
+
+type AnimalGroupedIndex = Record<string, Animal[]>;
+type AnimalIndex = Record<string, Animal>;
+type NestedAnimalIndex = {
+  [type: string]: {
+    [name: string]: Animal
+  }
+};
+type NestedAnimalList = {
+  [type: string]: {
+    [name: string]: Animal[]
+  }
+};
+
+describe("indexBy", () => {
+
+  it("indexes items", () => {
+    const animals: Animal[] = [
+      { type: "cat", name: "Kitty" },
+      { type: "cow", name: "MooMoo" },
+      { type: "dog", name: "Barky" },
+      { type: "dog", name: "Barky2" },
+      { type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce(indexBy(animal => animal.type), {} as AnimalIndex);
+
+    chai.expect(nameByType["cat"]).to.deep.equal({ type: "cat", name: "Kitty" });
+    chai.expect(nameByType["cow"]).to.deep.equal({ type: "cow", name: "MooMoo" });
+    chai.expect(nameByType["dog"]).to.deep.equal({ type: "dog", name: "Barky2" });
+    chai.expect(nameByType["fish"]).to.deep.equal({ type: "fish", name: "Bloop" });
+  });
+
+});
+
+describe("groupBy", () => {
+
+  it("indexes items", () => {
+    const animals = [
+      { type: "cat", name: "Kitty" },
+      { type: "cow", name: "MooMoo" },
+      { type: "dog", name: "Barky" },
+      { type: "dog", name: "Barky2" },
+      { type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce(groupBy(animal => animal.type), {} as AnimalGroupedIndex);
+
+    chai.expect(nameByType["cat"]).to.deep.equal([{ type: "cat", name: "Kitty" }]);
+    chai.expect(nameByType["cow"]).to.deep.equal([{ type: "cow", name: "MooMoo" }]);
+    chai.expect(nameByType["dog"]).to.deep.equal([{ type: "dog", name: "Barky" }, { type: "dog", name: "Barky2" }]);
+    chai.expect(nameByType["fish"]).to.deep.equal([{ type: "fish", name: "Bloop" }]);
+  });
+
+});
+
+describe("setNested", () => {
+
+  it("deeply sets items", () => {
+    const animals = [
+      { type: "cat", name: "Kitty" },
+      { type: "cow", name: "MooMoo" },
+      { type: "dog", name: "Barky" },
+      { type: "dog", name: "Barky2" },
+      { type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce((index, item) => setNested(item, index, item.type, item.name), {} as NestedAnimalIndex);
+
+    chai.expect(nameByType["cat"]["Kitty"]).to.deep.equal({ type: "cat", name: "Kitty" });
+    chai.expect(nameByType["cow"]["MooMoo"]).to.deep.equal({ type: "cow", name: "MooMoo" });
+    chai.expect(nameByType["dog"]["Barky"]).to.deep.equal({ type: "dog", name: "Barky" });
+    chai.expect(nameByType["dog"]["Barky2"]).to.deep.equal({ type: "dog", name: "Barky2" });
+    chai.expect(nameByType["fish"]["Bloop"]).to.deep.equal({ type: "fish", name: "Bloop" });
+  });
+
+});
+
+describe("pushNested", () => {
+
+  it("deeply sets items", () => {
+    const animals = [
+      { type: "cat", name: "Kitty" },
+      { type: "cow", name: "MooMoo" },
+      { type: "dog", name: "Barky" },
+      { type: "dog", name: "Barky" },
+      { type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce((index, item) => pushNested(item, index, item.type, item.name), {} as NestedAnimalList);
+
+    chai.expect(nameByType["cat"]["Kitty"]).to.deep.equal([{ type: "cat", name: "Kitty" }]);
+    chai.expect(nameByType["cow"]["MooMoo"]).to.deep.equal([{ type: "cow", name: "MooMoo" }]);
+    chai.expect(nameByType["dog"]["Barky"]).to.deep.equal([{ type: "dog", name: "Barky" }, { type: "dog", name: "Barky" }]);
+    chai.expect(nameByType["fish"]["Bloop"]).to.deep.equal([{ type: "fish", name: "Bloop" }]);
+  });
+
+});
 
 describe("keyValue", () => {
 
@@ -11,7 +124,7 @@ describe("keyValue", () => {
       { type: "fish", name: "Bloop" }
     ];
 
-    const nameByType = animals.reduce(keyValue(animal => [animal.type, animal.name]), {});
+    const nameByType = animals.reduce(keyValue(animal => [animal.type, animal.name]), {} as Record<string, string>);
 
     chai.expect(nameByType["cat"]).to.equal("Kitty");
     chai.expect(nameByType["cow"]).to.equal("MooMoo");
@@ -109,4 +222,36 @@ describe("product", () => {
     ]);
   });
 
+});
+
+describe("safeGet", () => {
+
+  it("returns undefined for unknown values", () => {
+    const obj = {
+      type: {
+        name: {
+          value: 6
+        }
+      }
+    };
+
+    chai.expect(safeGet(obj, "type", "nam_", "value")).to.equal(undefined);
+    chai.expect(safeGet(obj, "type", "name", "derp")).to.equal(undefined);
+  });
+
+  it("returns a value for existing properties", () => {
+    const obj = {
+      type: {
+        name: {
+          value: 6
+        },
+        second: {
+          value: undefined
+        }
+      }
+    };
+
+    chai.expect(safeGet(obj, "type", "name", "value")).to.equal(6);
+    chai.expect(safeGet(obj, "type", "second", "value")).to.equal(undefined);
+  });
 });
