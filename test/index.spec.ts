@@ -91,6 +91,24 @@ describe("setNested", () => {
     chai.expect(nameByType["fish"]["Bloop"]).to.deep.equal({ type: "fish", name: "Bloop" });
   });
 
+  it("works with numeric keys", () => {
+    const animals = [
+      { age: 1, type: "cat", name: "Kitty" },
+      { age: 2, type: "cow", name: "MooMoo" },
+      { age: 1, type: "dog", name: "Barky" },
+      { age: 2, type: "dog", name: "Barky2" },
+      { age: 3, type: "fish", name: "Bloop" }
+    ];
+
+    const nameByType = animals.reduce((index, item) => setNested(item, index, item.age, item.name), {} as NestedAnimalIndex);
+
+    chai.expect(nameByType[1]["Kitty"]).to.deep.equal({ age: 1, type: "cat", name: "Kitty" });
+    chai.expect(nameByType[2]["MooMoo"]).to.deep.equal({ age: 2, type: "cow", name: "MooMoo" });
+    chai.expect(nameByType[1]["Barky"]).to.deep.equal({ age: 1, type: "dog", name: "Barky" });
+    chai.expect(nameByType[2]["Barky2"]).to.deep.equal({ age: 2, type: "dog", name: "Barky2" });
+    chai.expect(nameByType[3]["Bloop"]).to.deep.equal({ age: 3, type: "fish", name: "Bloop" });
+  });
+
 });
 
 describe("pushNested", () => {

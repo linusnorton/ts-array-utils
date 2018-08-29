@@ -1,5 +1,10 @@
 
 /**
+ * Valid types for an objects key
+ */
+export type ObjectKey = string | number;
+
+/**
  * Function that can be passed to reduce
  */
 export type Reducer<T, U> = (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U;
@@ -7,7 +12,7 @@ export type Reducer<T, U> = (previousValue: U, currentValue: T, currentIndex: nu
 /**
  * Function the generates a key for a given value
  */
-export type KeyGenerator<T> = (item: T) => string;
+export type KeyGenerator<T> = (item: T) => ObjectKey;
 
 /**
  * Return a function that can be used to reduce an array to an object of U indexed by the string returned by the given
@@ -24,8 +29,8 @@ export type KeyGenerator<T> = (item: T) => string;
  * }
  *
  */
-export function indexBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T>> {
-  return function(previousValue: Record<string, T>, currentValue: T): Record<string, T> {
+export function indexBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<ObjectKey, T>> {
+  return function(previousValue: Record<ObjectKey, T>, currentValue: T): Record<ObjectKey, T> {
     previousValue[fn(currentValue)] = currentValue;
 
     return previousValue;
@@ -47,8 +52,8 @@ export function indexBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T>> {
  * }
  *
  */
-export function groupBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T[]>> {
-  return function(previousValue: Record<string, T[]>, currentValue: T): Record<string, T[]> {
+export function groupBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<ObjectKey, T[]>> {
+  return function(previousValue: Record<ObjectKey, T[]>, currentValue: T): Record<ObjectKey, T[]> {
     const key = fn(currentValue);
     (previousValue[key] = previousValue[key] || []).push(currentValue);
 
@@ -72,8 +77,8 @@ export function groupBy<T>(fn: KeyGenerator<T>): Reducer<T, Record<string, T[]>>
  *
  * Note that any duplicate keys are overridden.
  */
-export function keyValue<T, U>(fn: (item: T) => [string, U]): Reducer<T, Record<string, U>> {
-  return function(prev: Record<string, U>, item: T) {
+export function keyValue<T, U>(fn: (item: T) => [ObjectKey, U]): Reducer<T, Record<ObjectKey, U>> {
+  return function(prev: Record<ObjectKey, U>, item: T) {
     const [key, value] = fn(item);
 
     prev[key] = value;
@@ -101,7 +106,7 @@ export function keyValue<T, U>(fn: (item: T) => [string, U]): Reducer<T, Record<
  *   }
  * };
  */
-export function setNested<T, U>(value: U, root: T, ...keys: string[]): T {
+export function setNested<T, U>(value: U, root: T, ...keys: ObjectKey[]): T {
   let base: any = root;
 
   for (const key of keys.slice(0, -1)) {
@@ -135,7 +140,7 @@ export function setNested<T, U>(value: U, root: T, ...keys: string[]): T {
  *   }
  * };
  */
-export function pushNested<T extends Object, U>(value: U, root: T, ...keys: string[]): T {
+export function pushNested<T extends Object, U>(value: U, root: T, ...keys: ObjectKey[]): T {
   let base: any = root;
 
   for (const key of keys.slice(0, -1)) {
@@ -169,7 +174,7 @@ export function pushNested<T extends Object, U>(value: U, root: T, ...keys: stri
  * This method is useful for searching through multiple keys and falling back to another key if the first is not found.
  *
  */
-export function preferentialKeySearch<T>(obj: Record<string, T>, ...keys: string[]): T[] {
+export function preferentialKeySearch<T>(obj: Record<ObjectKey, T>, ...keys: ObjectKey[]): T[] {
   const values: T[] = [];
 
   for (const key of keys) {
@@ -209,7 +214,7 @@ export function preferentialKeySearch<T>(obj: Record<string, T>, ...keys: string
  * nestedObjectSearch(discounts, "ALL", "StationB", "StationC"); // ["50%", "25%", "10%"],
  * nestedObjectSearch(discounts, "ALL", "StationC", "StationD"); // ["10%"]
  */
-export function *nestedObjectSearch(obj: any, fallbackKey: string, ...keys: string[]): any | undefined {
+export function *nestedObjectSearch(obj: any, fallbackKey: ObjectKey, ...keys: ObjectKey[]): any | undefined {
   // find all the results at this search level
   const values = preferentialKeySearch(obj, keys[0], fallbackKey);
 
@@ -298,7 +303,7 @@ export function product(...sets: any[][]): any[][] {
  * safeGet(obj, "type", "name", "value"); // 6
  * safeGet(obj, "type", "name", "fail"); // undefined
  */
-export function safeGet<T>(obj: any, ...props: string[]): T | undefined {
+export function safeGet<T>(obj: any, ...props: ObjectKey[]): T | undefined {
   return props.length > 1 && obj[props[0]]
     ? safeGet(obj[props[0]], ...props.slice(1))
     : obj[props[0]];
