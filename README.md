@@ -158,6 +158,36 @@ nestedObjectSearch(discounts, "ALL", "StationB", "StationC"); // ["50%", "25%", 
 nestedObjectSearch(discounts, "ALL", "StationC", "StationD"); // ["10%"]
 ```
 
+### nestedObjectFind(obj: any, fallbackKey: string, ...keys: string[]): any | undefined
+
+This function recursively search through object tree using the given keys. Unlike nestedObjectSearch this function will only return a single result. . If at any point one of the keys is not set it will fallback to the fallbackKey.
+
+Example Usage:
+
+```
+const discounts = {
+  "ALL": {
+    "ALL": "10%",
+    "StationA": "15%",
+    "StationB": "20%",
+    "StationC": "25%"
+  },
+  "StationA": {
+    "ALL": "30%",
+    "StationB": "40%"
+  }
+  "StationB": {
+    "ALL": "50%",
+    "StationA": "60%"
+  }
+};
+
+nestedObjectFind(discounts, "ALL", "StationA", "StationB"); // "40%"
+nestedObjectFind(discounts, "ALL", "StationC", "StationB"); // "20%"
+nestedObjectFind(discounts, "ALL", "StationB", "StationC"); // "50%"
+nestedObjectFind(discounts, "ALL", "StationC", "StationD"); // "10%"
+```
+
 ### flatten<T>(arr: T[][]): T[]
 
 Flatten an array of arrays into a single array.

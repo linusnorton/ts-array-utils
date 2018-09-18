@@ -3,7 +3,7 @@ import {
   flatten,
   groupBy,
   indexBy,
-  keyValue,
+  keyValue, nestedObjectFind,
   nestedObjectSearch,
   preferentialKeySearch,
   product, pushNested, safeGet,
@@ -193,6 +193,37 @@ describe("nestedObjectSearch", () => {
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationC", "StationB"))).to.deep.equal(["20%", "10%"]);
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationB", "StationC"))).to.deep.equal(["50%", "25%", "10%"]);
     chai.expect(Array.from(nestedObjectSearch(discounts, "ALL", "StationC", "StationD"))).to.deep.equal(["10%"]);
+  });
+
+});
+
+describe("nestedObjectFind", () => {
+
+  it("returns a single option", () => {
+    const discounts = {
+      "ALL": {
+        "ALL": {
+          "ALL": "15%",
+          "00000": "10%"
+        },
+        "StationB": {
+          "ALL": "25%"
+        }
+      },
+      "StationA": {
+        "ALL": {
+          "ALL": "35%",
+          "00000": "30%"
+        }
+      }
+    };
+
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationA", "StationB", "00700")).to.equal("35%");
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationA", "StationB", "00000")).to.equal("30%");
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationD", "00700")).to.equal("15%");
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationD", "00000")).to.equal("10%");
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationB", "00700")).to.equal("25%");
+    chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationB", "00000")).to.equal("25%");
   });
 
 });

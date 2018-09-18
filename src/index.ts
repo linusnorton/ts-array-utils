@@ -231,6 +231,50 @@ export function *nestedObjectSearch(obj: any, fallbackKey: ObjectKey, ...keys: O
 }
 
 /**
+ * This function recursively search through object tree using the given keys. Unlike nestedObjectSearch this function
+ * will only return a single result. If at any point one of the keys is not set it will fallback to the fallbackKey.
+ *
+ * Example Usage:
+ *
+ * discounts: {
+ *   "ALL": {
+ *     "ALL": "10%",
+ *     "StationA": "15%",
+ *     "StationB": "20%",
+ *     "StationC": "25%"
+ *   },
+ *   "StationA": {
+ *     "ALL": "30%",
+ *     "StationB": "40%"
+ *   }
+ *   "StationB": {
+ *     "ALL": "50%",
+ *     "StationA": "60%"
+ *   }
+ * }
+ *
+ * nestedObjectFind(discounts, "ALL", "StationA", "StationB"); // "40%"
+ * nestedObjectFind(discounts, "ALL", "StationC", "StationB"); // "20%"
+ * nestedObjectFind(discounts, "ALL", "StationB", "StationC"); // "50%"
+ * nestedObjectFind(discounts, "ALL", "StationC", "StationD"); // "10%"
+ */
+export function nestedObjectFind(obj: any, fallbackKey: ObjectKey, ...keys: ObjectKey[]): any | undefined {
+  // find all the results at this search level
+  const values = preferentialKeySearch(obj, keys[0], fallbackKey);
+
+  if (values.length > 0) {
+    // if this is the last iteration return the values
+    if (keys.length === 1) {
+      return values[0];
+    }
+    // otherwise continue to go deeper into the object
+    else {
+      return nestedObjectFind(values[0], fallbackKey, ...keys.slice(1));
+    }
+  }
+}
+
+/**
  * Flatten an array of arrays into a single array.
  *
  * Example usage:
