@@ -1,6 +1,6 @@
 {
   "name": "ts-array-utils",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Miscellaneous array utilities written in TypeScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linusnorton/ts-array-utils.git"
+    "url": "git+https://github.com/louisraverdy/ts-array-utils.git"
   },
   "keywords": [
     "array",
@@ -19,19 +19,19 @@
   "author": "Linus Norton",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/linusnorton/ts-array-utils/issues"
+    "url": "https://github.com/louisraverdy/ts-array-utils/issues"
   },
-  "homepage": "https://github.com/linusnorton/ts-array-utils#readme",
+  "homepage": "https://github.com/louisraverdy/ts-array-utils#readme",
   "dependencies": {},
   "engines": {
-    "node": "^9.0.0"
+    "node": ">=14.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^2.2.48",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.0.3"
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
