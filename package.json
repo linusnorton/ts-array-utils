@@ -1,6 +1,6 @@
 {
   "name": "ts-array-utils",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Miscellaneous array utilities written in TypeScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -23,15 +23,12 @@
   },
   "homepage": "https://github.com/linusnorton/ts-array-utils#readme",
   "dependencies": {},
-  "engines": {
-    "node": "^9.0.0"
-  },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^2.2.48",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.0.3"
+    "@types/chai": "5.2.2",
+    "@types/mocha": "10.0.10",
+    "chai": "6.2.0",
+    "mocha": "11.7.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3"
   }
 }

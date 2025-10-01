@@ -1,6 +1,5 @@
 import * as chai from "chai";
 import {
-  flatten,
   groupBy,
   indexBy,
   keyValue, nestedObjectFind,
@@ -224,20 +223,6 @@ describe("nestedObjectFind", () => {
     chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationD", "00000")).to.equal("10%");
     chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationB", "00700")).to.equal("25%");
     chai.expect(nestedObjectFind(discounts, "ALL", "StationC", "StationB", "00000")).to.equal("25%");
-  });
-
-});
-
-describe("flatten", () => {
-
-  it("flattens nested arrays", () => {
-    const arrays = [
-      [1, 2, 3],
-      [2, 3, 4],
-      [3, 4, 5]
-    ];
-
-    chai.expect(flatten(arrays)).to.deep.equal([1, 2, 3, 2, 3, 4, 3, 4, 5]);
   });
 
 });

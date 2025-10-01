@@ -188,27 +188,9 @@ nestedObjectFind(discounts, "ALL", "StationB", "StationC"); // "50%"
 nestedObjectFind(discounts, "ALL", "StationC", "StationD"); // "10%"
 ```
 
-### flatten<T>(arr: T[][]): T[]
+### product<T extends readonly any[][]>(...sets: T): Array<{ [K in keyof T]: T[K] extends readonly (infer U)[] ? U : never }>
 
-Flatten an array of arrays into a single array.
-
-Example usage:
-
-```
-const arrays = [
-  [1, 2, 3],
-  [2, 3, 4],
-  [3, 4, 5]
-];
-
-flatten(arrays) // [1, 2, 3, 2, 3, 4, 3, 4, 5];
-```
-
-### product(...sets: any[][]): any[][] 
-
-Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
-
-See https://github.com/Microsoft/TypeScript/issues/5453
+Return the cartesian product of the given arrays with full type inference.
 
 Credit: Edd Mann (http://eddmann.com/posts/cartesian-product-in-javascript/)
 
