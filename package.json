@@ -1,6 +1,6 @@
 {
   "name": "ts-array-utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Miscellaneous array utilities written in TypeScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
