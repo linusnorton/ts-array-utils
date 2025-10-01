@@ -2,8 +2,8 @@
   "name": "ts-array-utils",
   "version": "1.0.3",
   "description": "Miscellaneous array utilities written in TypeScript",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "mocha --require ts-node/register 'test/**/*.spec.ts'",
     "prepublishOnly": "tsc -p ./ --outDir dist/"
