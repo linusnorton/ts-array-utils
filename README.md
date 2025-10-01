@@ -1,4 +1,4 @@
-# ts-array-utils [![Build Status](https://travis-ci.org/linusnorton/ts-array-utils.svg?branch=master)](https://travis-ci.org/linusnorton/ts-array-utils)
+# ts-array-utils [![Tests](https://github.com/linusnorton/ts-array-utils/actions/workflows/test.yml/badge.svg)](https://github.com/linusnorton/ts-array-utils/actions/workflows/test.yml)
 
 Miscellaneous array utilities written in TypeScript. This library has no dependencies but does require many ES6 features.
 
