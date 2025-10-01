@@ -4,6 +4,9 @@
   "description": "Miscellaneous array utilities written in TypeScript",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "test": "mocha --require ts-node/register 'test/**/*.spec.ts'",
     "prepublishOnly": "tsc -p ./ --outDir dist/"
